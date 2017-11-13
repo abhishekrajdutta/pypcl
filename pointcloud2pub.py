@@ -31,16 +31,20 @@ class CustomPointCloud(object):
             # PointField(name='my_field2', offset=20, datatype=PointField.FLOAT32, count=1),
         ]
 
-    def create_points(self):
+    def create_points(self,l,b,h):
 
          # ([0.3, 0.0, 0.0, 0xff0000])
         number_of_pixels=5
-        for p in xrange(0, number_of_pixels):
-            for q in xrange(0, number_of_pixels):
-                    for r in xrange(0, number_of_pixels):
+        for p in xrange(0, l*20):
+            for q in xrange(0, int(b*20)):
+                    for r in xrange(0, h*20):
                         # rospy.loginfo(p)
-                        self.POINTS.append([p/5,q/5,r/5,0xff0000])
-        rospy.loginfo(self.POINTS)
+                        x=p/20.0;
+                        y=q/20.0;
+                        z=r/20.0;
+
+                        self.POINTS.append([x,y,z,0xff0000])
+        # rospy.loginfo(self.POINTS)
 
 
     def publish_points(self):
@@ -56,7 +60,7 @@ class CustomPointCloud(object):
 def main():
     try:
         custom_point_cloud = CustomPointCloud()
-        custom_point_cloud.create_points()
+        custom_point_cloud.create_points(5,0.5,5)
         custom_point_cloud.publish_points()
     except rospy.ROSInterruptException:
         pass
