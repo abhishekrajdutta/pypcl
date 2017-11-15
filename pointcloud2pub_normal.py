@@ -6,6 +6,15 @@ from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
 
+
+
+
+
+
+# POINTS = []
+
+
+
 class CustomPointCloud(object):
     def __init__(self):
         rospy.init_node('publish_custom_point_cloud')
@@ -21,20 +30,19 @@ class CustomPointCloud(object):
             # PointField(name='my_field1', offset=16, datatype=PointField.FLOAT32, count=1),
             # PointField(name='my_field2', offset=20, datatype=PointField.FLOAT32, count=1),
         ]
-        
+
 
     def create_points(self,l,b,h):
 
          # ([0.3, 0.0, 0.0, 0xff0000])
         number_of_pixels=5
-        index=10.0
-        for p in xrange(0, int(l*index)):
-            for q in xrange(0, int(b*index)):
-                    for r in xrange(0, int(h*index)):
+        for p in xrange(0, l*20):
+            for q in xrange(0, int(b*20)):
+                    for r in xrange(0, h*20):
                         # rospy.loginfo(p)
-                        x=p/index;
-                        y=q/index;
-                        z=r/index;
+                        x=p/5.0;
+                        y=q/5.0;
+                        z=r/5.0;
 
                         self.POINTS.append([x,y,z,0xff0000])
         # rospy.loginfo(self.POINTS)
