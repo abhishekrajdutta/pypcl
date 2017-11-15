@@ -6,7 +6,7 @@ import tf.transformations as transformations
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
-
+import numpy as np
 
 
 class MapCreator():
@@ -14,7 +14,7 @@ class MapCreator():
 	def __init__(self):
 		rospy.init_node('get_walls')
 		self.publisher = rospy.Publisher('/camera/depth/points', PointCloud2, queue_size=1)
-		self.world_file = '/home/abhishek/rotors_ws/src/rotors_simulator/rotors_gazebo/worlds/square.xml'
+		self.world_file = '/home/abhishek/catkin_ws/src/pypcl/square.xml'
 		self.walls=[]
 		self.wallcount=0;
 		self.poses=[]
@@ -81,18 +81,26 @@ class MapCreator():
 
 	def create_points(self):
 		for n in range(0,(self.wallcount)):
-			# rospy.loginfo("yay\n")
+			
 			l=self.walls[n][2].x
 			b=self.walls[n][2].y
 			h=self.walls[n][2].z
-			# rospy.loginfo(self.poses[n][2].position.x)
+			# rospy.loginfo(self.poses[2])
 			px=self.poses[n][2].position.x
 			py=self.poses[n][2].position.y
 			pz=self.poses[n][2].position.z
+			quat=(self.poses[n][2].orientation.x,self.poses[n][2].orientation.y,self.poses[n][2].orientation.z,self.poses[n][2].orientation.w)
+
+			a=transformations.euler_from_quaternion(quat)
+
+			lx=abs(l*np.cos(a[2])-b*np.sin(a[2]));
+			ly=abs(l*np.sin(a[2])+b*np.cos(a[2]));
 
 			index=20.0
-			for p in xrange(-int(l*index/2), int(l*index/2)):
-				for q in xrange(0, int(b*index)):
+			
+						
+			for p in xrange(-int(lx*index/2.0), int(lx*index/2.0)):
+				for q in xrange(-int(ly*index/2.0), int(ly*index/2.0)):
 						for r in xrange(0, int(h*index)):
 							# rospy.loginfo(p)
 							x=px+p/index;
