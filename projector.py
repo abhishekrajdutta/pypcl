@@ -14,7 +14,8 @@ class MapCreator():
 	def __init__(self):
 		rospy.init_node('get_walls')
 		self.publisher = rospy.Publisher('/camera/depth/points', PointCloud2, queue_size=1)
-		self.world_file = '/home/abhishek/catkin_ws/src/pypcl/square.xml'
+		# self.world_file = '/home/abhishek/catkin_ws/src/pypcl/square.xml'
+		self.world_file = '/home/abhishek/catkin_ws/src/pypcl/corridor2.xml'
 		self.walls=[]
 		self.wallcount=0;
 		self.poses=[]
@@ -22,7 +23,7 @@ class MapCreator():
 		self.getXMLWalls()
 		# rospy.loginfo(self.poses)
 		self.POINTS=[]
-		self.HEADER = Header(frame_id='/odom')
+		self.HEADER = Header(frame_id='/temp')
 		self.l=1;
 		self.b=1;
 		self.h=1;
@@ -66,7 +67,7 @@ class MapCreator():
 			model_name = model.attrib['name']
 			if model_name in wall_objects:
 				wall_object = wall_objects[model_name]
-				box_pose_str = model.find('./pose').text
+				box_pose_str = model.find('./link/pose').text
 				box_pose = [float(x) for x in box_pose_str.split()]
 				pose = Pose()
 				pose.position = Vector3(*box_pose[0:3])
@@ -101,7 +102,7 @@ class MapCreator():
 						
 			for p in xrange(-int(lx*index/2.0), int(lx*index/2.0)):
 				for q in xrange(-int(ly*index/2.0), int(ly*index/2.0)):
-						for r in xrange(0, int(h*index)):
+						for r in xrange(-int(h*index/2.0), int(h*index/2.0)):
 							# rospy.loginfo(p)
 							x=px+p/index;
 							y=py+q/index;
